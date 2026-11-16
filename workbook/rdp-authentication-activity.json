@@ -1,0 +1,84 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 3,
+      "name": "query - 0",
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SecurityEvent\n| where EventID == 4625\n| summarize FailedLogons = count() by bin(TimeGenerated, 1h)",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "timechart",
+        "title": "Failed RDP Logons per hour"
+      }
+    },
+    {
+      "type": 3,
+      "name": "query - 1",
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SecurityEvent\n| where EventID == 4625 and isnotempty(IpAddress) and IpAddress != \"-\"\n| summarize Attempts = count() by IpAddress\n| top 10 by Attempts",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "barchart",
+        "title": "Top 10 Attacker IPs"
+      }
+    },
+    {
+      "type": 3,
+      "name": "query - 2",
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SecurityEvent\n| where EventID == 4625\n| summarize Attempts = count() by TargetUserName\n| top 15 by Attempts",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table",
+        "title": "Most-Guessed Usernames"
+      }
+    },
+    {
+      "type": 3,
+      "name": "query - 3",
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SecurityEvent\n| where EventID == 4625 and isnotempty(IpAddress) and IpAddress != \"-\"\n| extend Country = tostring(geo_info_from_ip_address(IpAddress).country)\n| summarize Attempts = count() by Country\n| order by Attempts desc",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "map",
+        "title": "Attacker Locations",
+        "mapSettings": {
+          "locInfo": "CountryRegion",
+          "locInfoColumn": "Country",
+          "sizeSettings": "Attempts",
+          "sizeAggregation": "Sum",
+          "legendMetric": "Attempts",
+          "legendAggregation": "Sum"
+        }
+      }
+    }
+  ],
+  "layout": {
+    "type": "flow"
+  },
+  "fallbackResourceIds": [
+    "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/YOUR-RESOURCE-GROUP/providers/microsoft.operationalinsights/workspaces/YOUR-WORKSPACE"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

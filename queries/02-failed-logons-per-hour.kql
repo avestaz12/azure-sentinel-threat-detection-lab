@@ -1,0 +1,4 @@
+// Failed logon volume per hour. Used for workbook tile 1 (time chart).
+SecurityEvent
+| where EventID == 4625
+| summarize FailedLogons = count() by bin(TimeGenerated, 1h)

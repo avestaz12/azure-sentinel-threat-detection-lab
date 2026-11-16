@@ -1,0 +1,7 @@
+// Failed logons by source-IP country. Used for workbook tile 4 (map, "Country or region" mode).
+// Note: IP geolocation reflects where the server/VPN endpoint is hosted, not the attacker's real location.
+SecurityEvent
+| where EventID == 4625 and isnotempty(IpAddress) and IpAddress != "-"
+| extend Country = tostring(geo_info_from_ip_address(IpAddress).country)
+| summarize Attempts = count() by Country
+| order by Attempts desc

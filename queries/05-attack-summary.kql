@@ -1,0 +1,8 @@
+// One-row summary of the attack data for the findings section.
+SecurityEvent
+| where EventID == 4625 and isnotempty(IpAddress) and IpAddress != "-"
+| summarize TotalFailedLogons = count(),
+            UniqueAttackerIPs = dcount(IpAddress),
+            UniqueUsernamesTried = dcount(TargetUserName),
+            FirstAttack = min(TimeGenerated),
+            LatestAttack = max(TimeGenerated)

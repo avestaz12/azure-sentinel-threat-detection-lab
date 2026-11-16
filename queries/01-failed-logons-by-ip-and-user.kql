@@ -1,0 +1,6 @@
+// Failed Windows logons (Event ID 4625) grouped by source IP and attempted username.
+// First hunting query run once the VM started sending SecurityEvent data.
+SecurityEvent
+| where EventID == 4625
+| summarize FailedAttempts = count() by IpAddress, TargetUserName
+| order by FailedAttempts desc

@@ -1,0 +1,12 @@
+// Detection logic for the scheduled analytics rule "RDP Brute Force - Excessive Failed Logons".
+// Runs every hour over the last hour; any source IP with 5+ failed logons raises an alert.
+// MITRE ATT&CK: Credential Access / T1110 Brute Force / T1110.001 Password Guessing
+SecurityEvent
+| where EventID == 4625
+| where isnotempty(IpAddress) and IpAddress != "-"
+| summarize FailedAttempts = count(),
+            TargetAccounts = make_set(TargetUserName),
+            FirstSeen = min(TimeGenerated),
+            LastSeen = max(TimeGenerated)
+    by IpAddress
+| where FailedAttempts >= 5

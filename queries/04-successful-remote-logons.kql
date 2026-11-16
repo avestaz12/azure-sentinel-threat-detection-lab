@@ -1,0 +1,8 @@
+// Investigation check: did any remote source ever log on successfully?
+// Event ID 4624 = successful logon. LogonType 3 = network (RDP with NLA), 10 = RemoteInteractive.
+// Run over the VM's full lifetime (Last 7 days). An empty result = no attacker got in.
+SecurityEvent
+| where EventID == 4624
+| where LogonType in (3, 10)
+| where isnotempty(IpAddress) and IpAddress != "-"
+| summarize SuccessfulLogons = count() by IpAddress, TargetUserName
